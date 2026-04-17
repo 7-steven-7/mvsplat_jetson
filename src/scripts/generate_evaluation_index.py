@@ -1,16 +1,15 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 import hydra
 import torch
-from jaxtyping import install_import_hook
 from omegaconf import DictConfig
 from pytorch_lightning import Trainer
+from src.misc.import_hook import install_runtime_import_hook
 
 # Configure beartype and jaxtyping.
-with install_import_hook(
-    ("src",),
-    ("beartype", "beartype"),
-):
+with install_runtime_import_hook():
     from src.config import load_typed_config
     from src.dataset import DatasetCfg
     from src.dataset.data_module import DataLoaderCfg, DataModule

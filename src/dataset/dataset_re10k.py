@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import json
 from dataclasses import dataclass
 from functools import cached_property
 from io import BytesIO
 from pathlib import Path
-from typing import Literal
+from typing import List, Literal
 
 import torch
 import torchvision.transforms as tf
@@ -24,7 +26,7 @@ from .view_sampler import ViewSampler
 @dataclass
 class DatasetRE10kCfg(DatasetCfgCommon):
     name: Literal["re10k"]
-    roots: list[Path]
+    roots: List[Path]
     baseline_epsilon: float
     max_fov: float
     make_baseline_1: bool

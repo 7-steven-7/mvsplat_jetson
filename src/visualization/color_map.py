@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import torch
 from colorspacious import cspace_convert
 from einops import rearrange

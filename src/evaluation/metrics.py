@@ -1,4 +1,6 @@
-from functools import cache
+from __future__ import annotations
+
+from functools import lru_cache
 
 import torch
 from einops import reduce
@@ -19,7 +21,7 @@ def compute_psnr(
     return -10 * mse.log10()
 
 
-@cache
+@lru_cache(maxsize=None)
 def get_lpips(device: torch.device) -> LPIPS:
     return LPIPS(net="vgg").to(device)
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ...dataset import DatasetCfg
 from .decoder import Decoder
 from .decoder_splatting_cuda import DecoderSplattingCUDA, DecoderSplattingCUDACfg

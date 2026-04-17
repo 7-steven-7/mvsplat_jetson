@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # Copyright (c) Facebook, Inc. and its affiliates.
 # https://github.com/facebookresearch/detectron2/blob/main/projects/TridentNet/tridentnet/trident_conv.py
 

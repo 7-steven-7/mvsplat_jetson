@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from math import isqrt
 from typing import Literal
 
@@ -108,13 +110,14 @@ def render_cuda(
             sh_degree=degree,
             campos=extrinsics[i, :3, 3],
             prefiltered=False,  # This matches the original usage.
+            antialiasing=False,
             debug=False,
         )
         rasterizer = GaussianRasterizer(settings)
 
         row, col = torch.triu_indices(3, 3)
 
-        image, radii = rasterizer(
+        image, radii, _ = rasterizer(
             means3D=gaussian_means[i],
             means2D=mean_gradients,
             shs=shs[i] if use_sh else None,
@@ -201,13 +204,14 @@ def render_cuda_orthographic(
             sh_degree=degree,
             campos=extrinsics[i, :3, 3],
             prefiltered=False,  # This matches the original usage.
+            antialiasing=False,
             debug=False,
         )
         rasterizer = GaussianRasterizer(settings)
 
         row, col = torch.triu_indices(3, 3)
 
-        image, radii = rasterizer(
+        image, radii, _ = rasterizer(
             means3D=gaussian_means[i],
             means2D=mean_gradients,
             shs=shs[i] if use_sh else None,

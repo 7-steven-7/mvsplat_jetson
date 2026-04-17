@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from jaxtyping import Float, Int64, Shaped
 from torch import Tensor, nn
 

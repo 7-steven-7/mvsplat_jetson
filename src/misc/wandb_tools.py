@@ -1,6 +1,6 @@
-from pathlib import Path
+from __future__ import annotations
 
-import wandb
+from pathlib import Path
 
 
 def version_to_int(artifact) -> int:
@@ -13,6 +13,8 @@ def download_checkpoint(
     download_dir: Path,
     version: str | None,
 ) -> Path:
+    import wandb
+
     api = wandb.Api()
     run = api.run(run_id)
 

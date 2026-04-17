@@ -1,25 +1,24 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 import hydra
 import torch
 from einops import einsum, rearrange, repeat
-from jaxtyping import install_import_hook
 from lightning_fabric.utilities.apply_func import apply_to_collection
 from scipy.spatial.transform import Rotation as R
 from torch import Tensor
 from torch.utils.data import default_collate
 import json
 from tqdm import tqdm
+from src.misc.import_hook import install_runtime_import_hook
 
 from ..visualization.vis_depth import viz_depth_tensor
 import os
 from PIL import Image
 
 # Configure beartype and jaxtyping.
-with install_import_hook(
-    ("src",),
-    ("beartype", "beartype"),
-):
+with install_runtime_import_hook():
     from src.config import load_typed_root_config
     from src.dataset import get_dataset
     from src.dataset.view_sampler.view_sampler_arbitrary import ViewSamplerArbitraryCfg

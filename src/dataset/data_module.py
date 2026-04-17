@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import random
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, List, Optional
 
 import numpy as np
 import torch
@@ -20,7 +22,7 @@ def get_data_shim(encoder: nn.Module) -> DataShim:
     because the modification depends on something outside the data loader.
     """
 
-    shims: list[DataShim] = []
+    shims: List[DataShim] = []
     if hasattr(encoder, "get_data_shim"):
         shims.append(encoder.get_data_shim())
 
@@ -37,7 +39,7 @@ class DataLoaderStageCfg:
     batch_size: int
     num_workers: int
     persistent_workers: bool
-    seed: int | None
+    seed: Optional[int]
 
 
 @dataclass

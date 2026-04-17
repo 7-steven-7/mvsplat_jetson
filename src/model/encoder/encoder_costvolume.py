@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Literal, Optional, List
 
@@ -43,7 +45,7 @@ class EncoderCostVolumeCfg:
     gaussian_adapter: GaussianAdapterCfg
     opacity_mapping: OpacityMappingCfg
     gaussians_per_pixel: int
-    unimatch_weights_path: str | None
+    unimatch_weights_path: Optional[str]
     downscale_factor: int
     shim_patch_size: int
     multiview_trans_attn_split: int

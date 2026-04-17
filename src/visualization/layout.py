@@ -7,6 +7,7 @@
 
 Images are assumed to be float32 tensors with shape (channel, height, width).
 """
+from __future__ import annotations
 
 from typing import Any, Generator, Iterable, Literal, Optional, Union
 

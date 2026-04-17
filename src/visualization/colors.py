@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from PIL import ImageColor
 
 # https://sashamaps.net/docs/resources/20-colors/

@@ -1,17 +1,16 @@
+from __future__ import annotations
+
 from pathlib import Path
 from random import randrange
 
 import hydra
 import torch
-from jaxtyping import install_import_hook
 from lightning_fabric.utilities.apply_func import move_data_to_device
 from omegaconf import DictConfig
+from src.misc.import_hook import install_runtime_import_hook
 
 # Configure beartype and jaxtyping.
-with install_import_hook(
-    ("src",),
-    ("beartype", "beartype"),
-):
+with install_runtime_import_hook():
     from src.config import load_typed_root_config
     from src.dataset.data_module import DataModule
     from src.geometry.epipolar_lines import project_rays

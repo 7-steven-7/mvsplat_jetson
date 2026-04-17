@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Literal
+from typing import List, Literal, Optional
 
 import torch
 from jaxtyping import Float, Int64
@@ -13,8 +15,8 @@ class ViewSamplerArbitraryCfg:
     name: Literal["arbitrary"]
     num_context_views: int
     num_target_views: int
-    context_views: list[int] | None
-    target_views: list[int] | None
+    context_views: Optional[List[int]]
+    target_views: Optional[List[int]]
 
 
 class ViewSamplerArbitrary(ViewSampler[ViewSamplerArbitraryCfg]):

@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
+from typing import Optional
 
 import torch
 from einops import reduce
@@ -14,7 +17,7 @@ from .loss import Loss
 @dataclass
 class LossDepthCfg:
     weight: float
-    sigma_image: float | None
+    sigma_image: Optional[float]
     use_second_derivative: bool
 
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import torch
 from einops import einsum, reduce, repeat
 from jaxtyping import Float

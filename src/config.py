@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, Optional, Type, TypeVar
+from typing import Dict, List, Literal, Optional, Type, TypeVar, Union
 
 from dacite import Config, from_dict
 from omegaconf import DictConfig, OmegaConf
@@ -30,15 +32,15 @@ class ModelCfg:
 @dataclass
 class TrainerCfg:
     max_steps: int
-    val_check_interval: int | float | None
-    gradient_clip_val: int | float | None
+    val_check_interval: Optional[Union[int, float]]
+    gradient_clip_val: Optional[Union[int, float]]
     num_sanity_val_steps: int
     num_nodes: Optional[int] = 1
 
 
 @dataclass
 class RootCfg:
-    wandb: dict
+    wandb: Dict
     mode: Literal["train", "test"]
     dataset: DatasetCfg
     data_loader: DataLoaderCfg
@@ -46,7 +48,7 @@ class RootCfg:
     optimizer: OptimizerCfg
     checkpointing: CheckpointingCfg
     trainer: TrainerCfg
-    loss: list[LossCfgWrapper]
+    loss: List[LossCfgWrapper]
     test: TestCfg
     train: TrainCfg
     seed: int
@@ -63,16 +65,16 @@ T = TypeVar("T")
 def load_typed_config(
     cfg: DictConfig,
     data_class: Type[T],
-    extra_type_hooks: dict = {},
+    extra_type_hooks: Optional[Dict] = None,
 ) -> T:
     return from_dict(
         data_class,
         OmegaConf.to_container(cfg),
-        config=Config(type_hooks={**TYPE_HOOKS, **extra_type_hooks}),
+        config=Config(type_hooks={**TYPE_HOOKS, **(extra_type_hooks or {})}),
     )
 
 
-def separate_loss_cfg_wrappers(joined: dict) -> list[LossCfgWrapper]:
+def separate_loss_cfg_wrappers(joined: Dict) -> List[LossCfgWrapper]:
     # The dummy allows the union to be converted.
     @dataclass
     class Dummy:
@@ -88,5 +90,5 @@ def load_typed_root_config(cfg: DictConfig) -> RootCfg:
     return load_typed_config(
         cfg,
         RootCfg,
-        {list[LossCfgWrapper]: separate_loss_cfg_wrappers},
+        {List[LossCfgWrapper]: separate_loss_cfg_wrappers},
     )

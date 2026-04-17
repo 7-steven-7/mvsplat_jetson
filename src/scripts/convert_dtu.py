@@ -1,6 +1,7 @@
 ''' Build upon: https://github.com/dcharatan/real_estate_10k_tools
                 https://github.com/donydchen/matchnerf/blob/main/datasets/dtu.py 
     DTU Acquired instruction: https://github.com/donydchen/matchnerf?tab=readme-ov-file#dtu-for-both-training-and-testing'''
+from __future__ import annotations
 
 import subprocess
 from pathlib import Path

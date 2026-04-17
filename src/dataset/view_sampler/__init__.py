@@ -1,4 +1,6 @@
-from typing import Any
+from __future__ import annotations
+
+from typing import Any, Union
 
 from ...misc.step_tracker import StepTracker
 from ..types import Stage
@@ -15,12 +17,12 @@ VIEW_SAMPLERS: dict[str, ViewSampler[Any]] = {
     "evaluation": ViewSamplerEvaluation,
 }
 
-ViewSamplerCfg = (
-    ViewSamplerArbitraryCfg
-    | ViewSamplerBoundedCfg
-    | ViewSamplerEvaluationCfg
-    | ViewSamplerAllCfg
-)
+ViewSamplerCfg = Union[
+    ViewSamplerArbitraryCfg,
+    ViewSamplerBoundedCfg,
+    ViewSamplerEvaluationCfg,
+    ViewSamplerAllCfg,
+]
 
 
 def get_view_sampler(

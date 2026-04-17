@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from jaxtyping import Float
 from torch import Tensor
 

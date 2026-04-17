@@ -1,4 +1,6 @@
-from typing import Callable, Literal, TypedDict
+from __future__ import annotations
+
+from typing import Callable, Literal, TypedDict, Union
 
 from jaxtyping import Float, Int64
 from torch import Tensor
@@ -46,5 +48,5 @@ class UnbatchedExample(TypedDict, total=False):
 # A data shim modifies the example after it's been returned from the data loader.
 DataShim = Callable[[BatchedExample], BatchedExample]
 
-AnyExample = BatchedExample | UnbatchedExample
-AnyViews = BatchedViews | UnbatchedViews
+AnyExample = Union[BatchedExample, UnbatchedExample]
+AnyViews = Union[BatchedViews, UnbatchedViews]

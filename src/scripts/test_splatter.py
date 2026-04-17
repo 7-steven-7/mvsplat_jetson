@@ -1,17 +1,16 @@
+from __future__ import annotations
+
 from pathlib import Path
 from time import time
 
 import torch
 from einops import einsum, repeat
-from jaxtyping import install_import_hook
 from scipy.spatial.transform import Rotation as R
 from tqdm import tqdm
+from src.misc.import_hook import install_runtime_import_hook
 
 # Configure beartype and jaxtyping.
-with install_import_hook(
-    ("src",),
-    ("beartype", "beartype"),
-):
+with install_runtime_import_hook():
     from src.misc.image_io import save_image
     from src.misc.sh_rotation import rotate_sh
     from src.model.decoder.cuda_splatting import render_cuda

@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 from pathlib import Path
 from random import randrange
 from typing import Optional
 
 import numpy as np
 import torch
-import wandb
 from einops import rearrange, reduce, repeat
 from jaxtyping import Bool, Float
 from torch import Tensor
@@ -82,18 +83,23 @@ class EncoderVisualizerCostVolume(
             )
 
         # This is kind of hacky for now, since we're using it for short experiments.
-        if self.cfg.export_ply and wandb.run is not None:
-            name = wandb.run._name.split(" ")[0]
-            ply_path = Path(f"outputs/gaussians/{name}/{global_step:0>6}.ply")
-            export_ply(
-                context["extrinsics"][0, 0],
-                result.means[0],
-                visualization_dump["scales"][0],
-                visualization_dump["rotations"][0],
-                result.harmonics[0],
-                result.opacities[0],
-                ply_path,
-            )
+        if self.cfg.export_ply:
+            try:
+                import wandb
+            except Exception:
+                wandb = None
+            if wandb is not None and wandb.run is not None:
+                name = wandb.run._name.split(" ")[0]
+                ply_path = Path(f"outputs/gaussians/{name}/{global_step:0>6}.ply")
+                export_ply(
+                    context["extrinsics"][0, 0],
+                    result.means[0],
+                    visualization_dump["scales"][0],
+                    visualization_dump["rotations"][0],
+                    result.harmonics[0],
+                    result.opacities[0],
+                    ply_path,
+                )
 
         return {
             "attention": self.visualize_attention(

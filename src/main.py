@@ -1,25 +1,26 @@
+from __future__ import annotations
+
 import os
 from pathlib import Path
+from typing import TYPE_CHECKING
 import warnings
 
 import hydra
 import torch
-import wandb
 from colorama import Fore
-from jaxtyping import install_import_hook
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import (
     LearningRateMonitor,
     ModelCheckpoint,
 )
-from pytorch_lightning.loggers.wandb import WandbLogger
+from src.misc.import_hook import install_runtime_import_hook
+
+if TYPE_CHECKING:
+    from pytorch_lightning.loggers.wandb import WandbLogger
 
 # Configure beartype and jaxtyping.
-with install_import_hook(
-    ("src",),
-    ("beartype", "beartype"),
-):
+with install_runtime_import_hook():
     from src.config import load_typed_root_config
     from src.dataset.data_module import DataModule
     from src.global_cfg import set_cfg
@@ -61,11 +62,14 @@ def train(cfg_dict: DictConfig):
     # Set up logging with wandb.
     callbacks = []
     if cfg_dict.wandb.mode != "disabled":
+        import wandb
+        from pytorch_lightning.loggers.wandb import WandbLogger
+
         wandb_extra_kwargs = {}
         if cfg_dict.wandb.id is not None:
             wandb_extra_kwargs.update({'id': cfg_dict.wandb.id,
                                        'resume': "must"})
-        logger = WandbLogger(
+        logger: WandbLogger = WandbLogger(
             entity=cfg_dict.wandb.entity,
             project=cfg_dict.wandb.project,
             mode=cfg_dict.wandb.mode,

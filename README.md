@@ -50,6 +50,20 @@ pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https
 pip install -r requirements.txt
 ```
 
+### Jetson Xavier Note
+
+For Jetson Xavier on JetPack 5.x, do not use the upstream x86 CUDA wheels shown above. This repo has been adjusted so the codebase can also import under Python 3.8, which is the practical baseline for Jetson-provided PyTorch builds on JetPack 5.
+
+Recommended workflow on Xavier:
+
+```bash
+conda create -n mvsplat310 python=3.8
+conda activate mvsplat310
+source activate_mvsplat_jetson.sh
+```
+
+Then install a Jetson-compatible `torch` / `torchvision` pair first, and only after that install the remaining Python packages from `requirements.txt` selectively if needed. The repo already includes small sample datasets under `datasets/` and pretrained checkpoints under `checkpoints/`, so evaluation is the first thing to bring up.
+
 ## Acquiring Datasets
 
 ### RealEstate10K and ACID

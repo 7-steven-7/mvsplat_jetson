@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from pathlib import Path
+from typing import List, Optional
 
 
 @dataclass
@@ -17,7 +20,7 @@ class SceneCfg:
 
 @dataclass
 class EvaluationCfg:
-    methods: list[MethodCfg]
-    side_by_side_path: Path | None
+    methods: List[MethodCfg]
+    side_by_side_path: Optional[Path]
     animate_side_by_side: bool
-    highlighted: list[SceneCfg]
+    highlighted: List[SceneCfg]

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # https://github.com/facebookresearch/detr/blob/main/models/position_encoding.py
 

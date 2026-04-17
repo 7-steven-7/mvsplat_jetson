@@ -1,14 +1,14 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Protocol, runtime_checkable
+from typing import Optional, Protocol, TYPE_CHECKING, runtime_checkable
 
 import moviepy.editor as mpy
 import torch
-import wandb
 from einops import pack, rearrange, repeat
 from jaxtyping import Float
 from pytorch_lightning import LightningModule
-from pytorch_lightning.loggers.wandb import WandbLogger
 from pytorch_lightning.utilities import rank_zero_only
 from torch import Tensor, nn, optim
 import numpy as np
@@ -41,6 +41,9 @@ from .decoder.decoder import Decoder, DepthRenderingMode
 from .encoder import Encoder
 from .encoder.visualization.encoder_visualizer import EncoderVisualizer
 
+if TYPE_CHECKING:
+    from pytorch_lightning.loggers.wandb import WandbLogger
+
 
 @dataclass
 class OptimizerCfg:
@@ -60,7 +63,7 @@ class TestCfg:
 
 @dataclass
 class TrainCfg:
-    depth_mode: DepthRenderingMode | None
+    depth_mode: Optional[DepthRenderingMode]
     extended_visualization: bool
     print_log_every_n_steps: int
 
@@ -78,7 +81,7 @@ class TrajectoryFn(Protocol):
 
 
 class ModelWrapper(LightningModule):
-    logger: Optional[WandbLogger]
+    logger: Optional["WandbLogger"]
     encoder: nn.Module
     encoder_visualizer: Optional[EncoderVisualizer]
     decoder: Decoder
@@ -520,22 +523,33 @@ class ModelWrapper(LightningModule):
         if loop_reverse:
             video = pack([video, video[::-1][1:-1]], "* c h w")[0]
         visualizations = {
-            f"video/{name}": wandb.Video(video[None], fps=30, format="mp4")
+            f"video/{name}": video
         }
 
-        # Since the PyTorch Lightning doesn't support video logging, log to wandb directly.
-        try:
-            wandb.log(visualizations)
-        except Exception:
-            assert isinstance(self.logger, LocalLogger)
-            for key, value in visualizations.items():
-                tensor = value._prepare_video(value.data)
-                clip = mpy.ImageSequenceClip(list(tensor), fps=value._fps)
-                dir = LOG_PATH / key
-                dir.mkdir(exist_ok=True, parents=True)
-                clip.write_videofile(
-                    str(dir / f"{self.global_step:0>6}.mp4"), logger=None
+        # Since PyTorch Lightning doesn't support video logging, log to wandb directly
+        # when available; otherwise persist the rendered frames locally.
+        if not isinstance(self.logger, LocalLogger):
+            try:
+                import wandb
+
+                wandb.log(
+                    {
+                        key: wandb.Video(value[None], fps=30, format="mp4")
+                        for key, value in visualizations.items()
+                    }
                 )
+                return
+            except Exception:
+                pass
+
+        assert isinstance(self.logger, LocalLogger)
+        for key, value in visualizations.items():
+            clip = mpy.ImageSequenceClip(list(value), fps=30)
+            dir = LOG_PATH / key
+            dir.mkdir(exist_ok=True, parents=True)
+            clip.write_videofile(
+                str(dir / f"{self.global_step:0>6}.mp4"), logger=None
+            )
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=self.optimizer_cfg.lr)

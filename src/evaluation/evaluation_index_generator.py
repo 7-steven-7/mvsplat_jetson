@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from typing import Dict, Optional, Tuple
 
 import torch
 from einops import rearrange
@@ -28,14 +31,14 @@ class EvaluationIndexGeneratorCfg:
 
 @dataclass
 class IndexEntry:
-    context: tuple[int, ...]
-    target: tuple[int, ...]
+    context: Tuple[int, ...]
+    target: Tuple[int, ...]
 
 
 class EvaluationIndexGenerator(LightningModule):
     generator: torch.Generator
     cfg: EvaluationIndexGeneratorCfg
-    index: dict[str, IndexEntry | None]
+    index: Dict[str, Optional[IndexEntry]]
 
     def __init__(self, cfg: EvaluationIndexGeneratorCfg) -> None:
         super().__init__()
